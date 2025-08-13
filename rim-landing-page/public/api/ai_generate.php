@@ -1,54 +1,97 @@
 <?php
+// Include the configuration file to get the API key
+require_once '../../config.php';
+
 // Set the content type of the response to JSON
 header('Content-Type: application/json');
 
-// Simulate a network delay
-sleep(1);
-
 // Get the raw POST data
 $json_data = file_get_contents('php://input');
-
-// Decode the JSON data
 $data = json_decode($json_data, true);
 
-// Get the persona and prompt from the data, with fallbacks
 $persona = $data['persona'] ?? 'unknown';
 $prompt = $data['prompt'] ?? 'No prompt provided.';
 
-// Prepare the response array
-$response = [
-    'success' => true,
-    'persona' => $persona,
-    'prompt' => $prompt,
-    'response' => ''
-];
+// --- Google Gemini API Integration ---
 
-// Generate a simulated AI response based on the persona
-switch ($persona) {
-    case 'business_solution':
-        $response['response'] = "Based on your query about \"{$prompt}\", our AI suggests a three-pronged approach:\n\n1. **Operational Streamlining:** Implement a lightweight ERP to consolidate your processes.\n2. **Customer Engagement:** Utilize a CRM to track client interactions and improve retention.\n3. **Data-Driven Decisions:** Develop a real-time analytics dashboard to monitor key performance indicators (KPIs).\n\nThis strategy is projected to increase efficiency by 25% within the first six months.";
-        break;
+$api_key = defined('GOOGLE_AI_API_KEY') ? GOOGLE_AI_API_KEY : '';
 
-    case 'marketing':
-        $response['response'] = "For marketing \"{$prompt}\", our AI recommends a hyper-targeted digital campaign:\n\n- **Content:** Create a series of short-form videos showcasing customer success stories.\n- **Channels:** Focus on LinkedIn for B2B outreach and Instagram Reels for broader brand awareness.\n- **Action:** Launch a limited-time free consultation offer promoted via targeted ads to capture high-quality leads.";
-        break;
-
-    case 'product_description':
-        $response['response'] = "Here is a compelling product description for \"{$prompt}\":\n\n**Unleash Unrivaled Performance.**\n\nEngineered for excellence, our product combines cutting-edge technology with a sleek, user-centric design. Experience a seamless workflow and unparalleled efficiency that empowers you to achieve more. Durable, reliable, and powerful—it's not just a tool, it's your next competitive advantage.";
-        break;
-
-    case 'it_architect':
-        $response['response'] = "IT Architecture & Cost Estimate for \"{$prompt}\":\n\n**Recommended Architecture:**\n- **Frontend:** Single Page Application (SPA) using Vue.js for a reactive user experience.\n- **Backend:** A robust PHP API to handle business logic.\n- **Database:** MySQL for reliable, structured data storage.\n- **Hosting:** A scalable cloud VPS solution.\n\n**Estimated Cost:**\n- **Phase 1 (MVP Development):** Rp 75,000,000 - Rp 120,000,000\n- **Monthly Operational Cost:** Rp 2,500,000\n\nThis estimate covers development, testing, and initial deployment.";
-        break;
-
-    default:
-        $response['success'] = false;
-        $response['response'] = "Sorry, the requested AI persona '{$persona}' is not recognized. Please try a different category.";
-        break;
+if (empty($api_key)) {
+    echo json_encode(['success' => false, 'response' => 'API Key is not configured.']);
+    exit();
 }
 
-// Encode the response array to JSON and output it
-echo json_encode($response);
+// Construct a more detailed prompt based on the persona
+$full_prompt = "";
+switch ($persona) {
+    case 'business_solution':
+        $full_prompt = "As a business solutions strategist, provide actionable advice for the following problem: " . $prompt;
+        break;
+    case 'marketing':
+        $full_prompt = "As a marketing strategist, create an innovative marketing campaign idea for the following product/service: " . $prompt;
+        break;
+    case 'product_description':
+        $full_prompt = "As a marketing copywriter, write a compelling and concise product description for the following product: " . $prompt;
+        break;
+    case 'it_architect':
+        $full_prompt = "As an IT architect, provide a high-level system architecture and a rough cost estimate for the following project: " . $prompt;
+        break;
+    default:
+        echo json_encode(['success' => false, 'response' => "Invalid persona provided."]);
+        exit();
+}
 
-exit();
+$api_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=' . $api_key;
+
+$request_body = json_encode([
+    "contents" => [
+        [
+            "parts" => [
+                ["text" => $full_prompt]
+            ]
+        ]
+    ]
+]);
+
+// Initialize cURL session
+$ch = curl_init();
+
+// Set cURL options
+curl_setopt($ch, CURLOPT_URL, $api_url);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $request_body);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+]);
+
+// Execute cURL session
+$api_response = curl_exec($ch);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+// Check for cURL errors
+if (curl_errno($ch)) {
+    $error_msg = curl_error($ch);
+    curl_close($ch);
+    echo json_encode(['success' => false, 'response' => 'Failed to connect to AI service: ' . $error_msg]);
+    exit();
+}
+
+curl_close($ch);
+
+// Decode the API response
+$response_data = json_decode($api_response, true);
+
+// Prepare the final JSON response for the frontend
+$final_response = ['success' => false, 'response' => 'An unexpected error occurred with the AI service.'];
+
+if ($http_code == 200 && isset($response_data['candidates'][0]['content']['parts'][0]['text'])) {
+    $final_response['success'] = true;
+    $final_response['response'] = $response_data['candidates'][0]['content']['parts'][0]['text'];
+} elseif (isset($response_data['error']['message'])) {
+    $final_response['response'] = 'AI API Error: ' . $response_data['error']['message'];
+}
+
+echo json_encode($final_response);
+
 ?>

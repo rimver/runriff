@@ -26,10 +26,12 @@ function getContent(string $key, string $default = ''): string {
         require __DIR__ . '/database.php';
         $content = [];
         try {
-            $sql = "SELECT content_key, content_value FROM content";
-            $stmt = $pdo->query($sql);
-            if ($stmt) {
-                $content = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+            if ($pdo) { // Check if the database connection object is available
+                $sql = "SELECT content_key, content_value FROM content";
+                $stmt = $pdo->query($sql);
+                if ($stmt) {
+                    $content = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+                }
             }
         } catch (PDOException $e) {
             // If the table doesn't exist or there's an error, we'll return defaults.

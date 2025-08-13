@@ -17,6 +17,11 @@ $email = $password = '';
 $errors = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('CSRF token validation failed.');
+    }
+
     // Validate email
     if (empty(trim($_POST["email"]))) {
         $errors['email'] = "Please enter your email.";
@@ -102,6 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ?>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <div class="mb-4">
                     <label for="email" class="block text-secondary text-sm font-bold mb-2">Email</label>
                     <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($email); ?>" class="w-full bg-background border <?php echo (!empty($errors['email'])) ? 'border-red-500' : 'border-border-color'; ?> rounded-md p-3 text-primary focus:ring-2 focus:ring-accent">

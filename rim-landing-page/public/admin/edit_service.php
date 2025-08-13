@@ -36,6 +36,11 @@ if ($stmt_fetch = $pdo->prepare($sql_fetch)) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('CSRF token validation failed.');
+    }
+
     // Validate name
     if (empty(trim($_POST['name']))) {
         $errors['name'] = 'Please enter a service name.';
@@ -84,6 +89,7 @@ unset($pdo);
     <h1 class="text-3xl font-bold font-display text-accent mb-6">Edit Service</h1>
     <div class="max-w-2xl mx-auto bg-card-bg p-8 rounded-lg border border-border-color">
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>?id=<?php echo $service_id; ?>" method="post">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <div class="mb-4">
                 <label for="name" class="block text-secondary text-sm font-bold mb-2">Service Name</label>
                 <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($name); ?>" class="w-full bg-background border <?php echo (!empty($errors['name'])) ? 'border-red-500' : 'border-border-color'; ?> rounded-md p-3 text-primary focus:ring-2 focus:ring-accent">

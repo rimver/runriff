@@ -13,6 +13,11 @@ $success_message = '';
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('CSRF token validation failed.');
+    }
+
     if (isset($_POST['content']) && is_array($_POST['content'])) {
         $sql = "UPDATE content SET content_value = :value WHERE content_key = :key";
         $stmt = $pdo->prepare($sql);
@@ -40,6 +45,7 @@ $contents = $pdo->query($content_sql)->fetchAll(PDO::FETCH_KEY_PAIR);
 
     <div class="bg-card-bg p-8 rounded-lg border border-border-color">
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <div class="space-y-6">
                 <?php foreach ($contents as $key => $value): ?>
                     <div>

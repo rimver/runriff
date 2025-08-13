@@ -14,6 +14,11 @@ $error_message = '';
 
 // Handle status update
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status'])) {
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('CSRF token validation failed.');
+    }
+
     $order_id = $_POST['order_id'];
     $new_status = $_POST['status'];
     $allowed_statuses = ['pending', 'in-progress', 'completed', 'cancelled'];
@@ -101,6 +106,7 @@ $orders = $pdo->query($sql)->fetchAll();
                                 </td>
                                 <td class="p-4">
                                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" class="flex items-center gap-2">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                         <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
                                         <select name="status" class="bg-background border border-border-color rounded-md p-2 text-sm">
                                             <option value="pending" <?php if($order['status'] == 'pending') echo 'selected'; ?>>Pending</option>

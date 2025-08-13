@@ -27,4 +27,7 @@ define('DB_HOST', 'localhost');
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8mb4');
 
+/** Google AI API Key */
+define('GOOGLE_AI_API_KEY', 'AIzaSyCbN6_eH8zeU9v9dzUrlyOfvUyH0sR9q3w');
+
 ?>
