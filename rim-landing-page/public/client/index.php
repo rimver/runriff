@@ -66,6 +66,7 @@ unset($pdo);
                                             <span class="px-3 py-1 text-xs font-semibold rounded-full <?php
                                                 switch ($order['status']) {
                                                     case 'pending': echo 'bg-yellow-500/20 text-yellow-300'; break;
+                                                    case 'in-progress': echo 'bg-blue-500/20 text-blue-300'; break;
                                                     case 'completed': echo 'bg-green-500/20 text-green-300'; break;
                                                     case 'cancelled': echo 'bg-red-500/20 text-red-300'; break;
                                                     default: echo 'bg-gray-500/20 text-gray-300';

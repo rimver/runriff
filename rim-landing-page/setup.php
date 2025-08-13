@@ -57,6 +57,33 @@ try {
     $pdo->exec($sql_orders);
     echo "Table 'orders' created or already exists.\n";
 
+    // SQL statement for creating the content table
+    $sql_content = "
+    CREATE TABLE IF NOT EXISTS content (
+        id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        content_key VARCHAR(100) NOT NULL UNIQUE,
+        content_value TEXT,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    ";
+    $pdo->exec($sql_content);
+    echo "Table 'content' created or already exists.\n";
+
+    // Insert default content, ignoring if keys already exist
+    $default_content = [
+        'hero_title' => 'Bisnis Anda Punya Potensi. Kami Punya Teknologinya.',
+        'hero_subtitle' => 'Lupakan kerumitan teknis. Kami adalah mitra teknologi satu pintu yang membereskan semuanya—dari instalasi fisik hingga inovasi digital—agar Anda bisa fokus pada hal terpenting: mengembangkan bisnis.'
+    ];
+
+    $sql_insert = "INSERT IGNORE INTO content (content_key, content_value) VALUES (:key, :value)";
+    $stmt = $pdo->prepare($sql_insert);
+
+    foreach ($default_content as $key => $value) {
+        $stmt->execute(['key' => $key, 'value' => $value]);
+    }
+    echo "Default content inserted or already exists.\n";
+
+
     echo "\nDatabase setup completed successfully!\n";
 
 } catch (PDOException $e) {

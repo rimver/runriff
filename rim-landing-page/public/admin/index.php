@@ -24,6 +24,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
                 <h2 class="text-xl font-bold text-primary mb-2"><i class="bi bi-box-seam-fill mr-2"></i>View Orders</h2>
                 <p class="text-secondary">See all client orders and manage their status.</p>
             </a>
+            <a href="content.php" class="bg-background/50 p-6 rounded-lg border border-border-color hover:border-accent transition-colors">
+                <h2 class="text-xl font-bold text-primary mb-2"><i class="bi bi-pencil-square mr-2"></i>Manage Content</h2>
+                <p class="text-secondary">Edit the text content of the main website pages.</p>
+            </a>
         </div>
     </div>
 </div>

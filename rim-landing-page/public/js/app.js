@@ -322,7 +322,7 @@ document.querySelectorAll('.ai-tab-button').forEach(button => {
 
 // AI Form Submissions
 document.querySelectorAll('.ai-form').forEach(form => {
-    form.addEventListener('submit', async function(e) {
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
 
       const textarea = this.querySelector('textarea');
@@ -330,6 +330,7 @@ document.querySelectorAll('.ai-form').forEach(form => {
       const resultDiv = this.parentElement.querySelector('.ai-result');
       const responseDiv = this.parentElement.querySelector('.ai-response');
       const persona = this.getAttribute('data-persona');
+      const originalButtonText = submitBtn.innerHTML;
 
       if (!textarea.value.trim()) {
         alert('Please enter your question or request.');
@@ -338,142 +339,41 @@ document.querySelectorAll('.ai-form').forEach(form => {
 
       // Show loading state
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Processing...';
+      submitBtn.innerHTML = '<i class="bi bi-hourglass-split mr-2"></i>Processing...';
+      resultDiv.classList.add('hidden');
 
-      try {
-        // Simulate AI response (replace with actual API call)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Mock responses based on persona
-        let response = '';
-        switch(persona) {
-          case 'business_solution':
-            response = `Berdasarkan pertanyaan Anda tentang "${textarea.value.substring(0, 50)}...", berikut adalah rekomendasi strategis:
-
-1. **Analisis Situasi Saat Ini**: Evaluasi proses operasional existing untuk mengidentifikasi bottleneck dan inefficiency.
-
-2. **Solusi Teknologi**:
-   - Implementasi sistem ERP terintegrasi
-   - Otomatisasi workflow menggunakan tools seperti RPA
-   - Dashboard real-time untuk monitoring KPI
-
-3. **Timeline Implementasi**:
-   - Fase 1 (1-2 bulan): Assessment dan planning
-   - Fase 2 (3-6 bulan): Development dan testing
-   - Fase 3 (1-2 bulan): Deployment dan training
-
-4. **ROI Proyeksi**: Estimasi penghematan 25-40% operational cost dalam 12 bulan.
-
-Apakah Anda ingin konsultasi lebih detail untuk solusi khusus bisnis Anda?`;
-            break;
-          case 'marketing':
-            response = `Strategi pemasaran untuk "${textarea.value.substring(0, 50)}...":
-
-**1. Digital Marketing Strategy:**
-- Content marketing dengan storytelling yang authentic
-- Social media campaign di Instagram, TikTok, dan LinkedIn
-- Influencer partnerships dengan micro-influencers lokal
-
-**2. Campaign Ideas:**
-- "From Bean to Cup" series (behind-the-scenes content)
-- User-generated content contest #MyOrganicMoment
-- Virtual coffee tasting events untuk komunitas profesional
-
-**3. Customer Acquisition:**
-- Google Ads targeting "organic coffee" dan "specialty coffee"
-- Partnership dengan co-working spaces untuk sampling
-- Corporate sales program untuk kantor-kantor
-
-**4. Budget Allocation:**
-- Social Media: 40%
-- Content Creation: 30%
-- Paid Advertising: 20%
-- Events & Partnerships: 10%
-
-Ingin kami buatkan campaign blueprint yang lebih detail?`;
-            break;
-          case 'product_description':
-            response = `**Laptop Gaming Beast - RTX 4060 Powerhouse** 🚀
-
-Rasakan pengalaman gaming yang tak terlupakan dengan laptop gaming premium ini! Ditenagai oleh NVIDIA RTX 4060 terbaru, setiap frame akan terasa hidup dengan ray tracing dan DLSS 3.0 yang memukau.
-
-**✨ Spesifikasi Unggulan:**
-• **Grafis**: NVIDIA RTX 4060 8GB GDDR6 - Visual stunning untuk gaming AAA
-• **Memory**: 16GB DDR5 RAM - Multitasking tanpa lag
-• **Storage**: SSD NVMe 512GB - Loading super cepat
-• **Display**: 15.6" FHD 144Hz - Smooth gameplay, zero ghosting
-
-**🎯 Perfect For:**
-- Gamers kompetitif yang butuh FPS tinggi
-- Content creators untuk streaming & editing
-- Professional yang butuh performa maksimal
-
-**💡 Why Choose This?**
-Kombinasi sempurna antara performa, portabilitas, dan value. Dengan cooling system advanced, laptop ini tetap cool even under pressure!
-
-*Garansi resmi 2 tahun | Free gaming mouse worth 500K*
-
-Ready to level up your game? 🎮`;
-            break;
-          case 'it_architect':
-            response = `**Arsitektur IT & Estimasi Biaya - E-Commerce Platform**
-
-**🏗️ Arsitektur System:**
-
-**Frontend:**
-- React.js/Next.js untuk web responsif
-- React Native untuk mobile app
-- CDN untuk optimasi loading
-
-**Backend:**
-- Node.js/Express.js API server
-- PostgreSQL database dengan Redis caching
-- Elasticsearch untuk product search
-
-**Infrastructure:**
-- AWS/Google Cloud hosting
-- Auto-scaling load balancers
-- SSL certificate & security layers
-
-**💰 Estimasi Biaya (IDR):**
-
-**Development (3-4 bulan):**
-- Frontend Development: 45,000,000
-- Backend Development: 55,000,000
-- Mobile App: 35,000,000
-- Payment Integration: 15,000,000
-- Testing & QA: 10,000,000
-
-**Infrastructure (per bulan):**
-- Cloud Hosting: 2,500,000
-- CDN & Security: 1,000,000
-- Database: 1,500,000
-- Monitoring & Backup: 500,000
-
-**Total Investment: ~160,000,000 (development) + 5,500,000/bulan (operational)**
-
-**📈 Timeline & Milestone:**
-- Month 1: System design & setup
-- Month 2: Core development
-- Month 3: Integration & testing
-- Month 4: Launch & optimization
-
-Ingin proposal detail dengan technical specification lengkap?`;
-            break;
-          default:
-            response = 'Thank you for your inquiry. Our AI assistant is processing your request...';
+      // Call the backend API
+      fetch('/api/ai_generate.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          persona: persona,
+          prompt: textarea.value
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Sanitize response before injecting as HTML
+          const sanitizedResponse = data.response.replace(/\n/g, '<br>');
+          responseDiv.innerHTML = sanitizedResponse;
+        } else {
+          responseDiv.textContent = data.response || 'An unknown error occurred.';
         }
-
-        responseDiv.innerHTML = response.replace(/\n/g, '<br>');
         resultDiv.classList.remove('hidden');
-
-      } catch (error) {
-        responseDiv.innerHTML = 'Sorry, there was an error processing your request. Please try again.';
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        responseDiv.textContent = 'Sorry, there was a network error processing your request. Please try again.';
         resultDiv.classList.remove('hidden');
-      } finally {
+      })
+      .finally(() => {
+        // Reset button state
         submitBtn.disabled = false;
-        submitBtn.textContent = submitBtn.textContent.replace('Processing...', 'Get AI Response');
-      }
+        submitBtn.innerHTML = originalButtonText;
+      });
     });
 });
 
