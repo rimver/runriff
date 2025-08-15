@@ -1,4 +1,8 @@
-<?php require_once '../helpers.php'; ?>
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+require_once '../helpers.php';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -91,10 +95,10 @@
           <div class="absolute top-0 left-0 w-full h-full bg-background/50 z-10"></div>
           <div class="relative z-20 container mx-auto px-6 flex flex-col items-center">
             <h1 class="text-4xl md:text-6xl font-display font-bold text-primary mb-4 max-w-4xl shimmer-effect">
-              <?php echo getContent('hero_title', 'Bisnis Anda Punya Potensi. Kami Punya Teknologinya.'); ?>
+              Bisnis Anda Punya Potensi. Kami Punya Teknologinya.
             </h1>
             <p class="text-lg md:text-xl text-secondary max-w-3xl mb-8">
-              <?php echo getContent('hero_subtitle', 'Lupakan kerumitan teknis. Kami adalah mitra teknologi satu pintu yang membereskan semuanya—dari instalasi fisik hingga inovasi digital—agar Anda bisa fokus pada hal terpenting: mengembangkan bisnis.'); ?>
+              Lupakan kerumitan teknis. Kami adalah mitra teknologi satu pintu yang membereskan semuanya—dari instalasi fisik hingga inovasi digital—agar Anda bisa fokus pada hal terpenting: mengembangkan bisnis.
             </p>
             <div class="flex flex-col sm:flex-row gap-4">
               <a href="#ai-solusi" class="bg-accent text-background font-bold py-3 px-8 rounded-md hover:bg-yellow-400 transition-all duration-300 text-lg transform hover:scale-105">
