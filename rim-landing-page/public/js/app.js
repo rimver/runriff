@@ -365,8 +365,8 @@ document.querySelectorAll('.ai-form').forEach(form => {
         resultDiv.classList.remove('hidden');
       })
       .catch(error => {
-        console.error('Error:', error);
-        responseDiv.textContent = 'Sorry, there was a network error processing your request. Please try again.';
+        console.error('Detailed Fetch Error:', error);
+        responseDiv.textContent = 'An error occurred. Please check the browser console for more details.';
         resultDiv.classList.remove('hidden');
       })
       .finally(() => {

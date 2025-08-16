@@ -1,102 +1,85 @@
-# Panduan Instalasi Aplikasi di cPanel
+# Panduan Instalasi Aplikasi di cPanel (Metode Aman)
 
-Dokumen ini menjelaskan langkah-langkah untuk menginstal aplikasi PHP ini di lingkungan hosting cPanel standar.
+Dokumen ini menjelaskan metode yang direkomendasikan dan paling aman untuk menginstal aplikasi PHP ini di lingkungan hosting cPanel.
 
 ---
 
 ## Prasyarat
 
-Sebelum memulai, pastikan Anda memiliki:
-1.  Akses login ke akun cPanel Anda.
-2.  Sebuah nama domain atau subdomain yang sudah diarahkan ke hosting Anda.
-3.  File aplikasi yang sudah di-zip dan siap untuk diunggah.
+-   Akses login ke akun cPanel Anda.
+-   Sebuah nama domain atau subdomain yang sudah diarahkan ke hosting Anda.
+-   File aplikasi (`rim-landing-page.zip`) yang siap untuk diunggah.
 
 ---
 
 ## Catatan Penting: Ekstensi PHP
 
-Aplikasi ini memerlukan ekstensi PHP `pdo_mysql` agar dapat terhubung ke database. Sebagian besar host cPanel modern sudah mengaktifkannya secara default.
-
+Aplikasi ini memerlukan ekstensi PHP `pdo_mysql` untuk terhubung ke database.
 **Cara Memeriksa:**
-1.  Di cPanel, cari "Select PHP Version".
-2.  Di halaman tersebut, pastikan `pdo_mysql` (atau terkadang hanya `mysqlnd`) ada dalam daftar dan dicentang.
-3.  Jika tidak dicentang, centang kotaknya dan simpan perubahan.
-
-Jika Anda mendapatkan error "could not find driver" atau "500 error" saat menjalankan `setup.php`, kemungkinan besar ekstensi ini tidak aktif.
-
----
-
-## Langkah 1: Unggah File Aplikasi
-
-1.  **Login ke cPanel:** Masuk ke akun cPanel Anda.
-2.  **Buka File Manager:** Cari dan klik ikon "File Manager".
-3.  **Navigasi ke Direktori Root:** Buka direktori `public_html` (atau direktori root domain/subdomain Anda jika berbeda).
-4.  **Unggah File:**
-    -   Klik tombol "Upload" di menu atas.
-    -   Pilih file `.zip` dari aplikasi yang sudah Anda siapkan.
-    -   Tunggu hingga proses unggah selesai.
-5.  **Ekstrak File:**
-    -   Kembali ke File Manager.
-    -   Klik kanan pada file `.zip` yang baru saja diunggah.
-    -   Pilih "Extract" dari menu.
-    -   Konfirmasi lokasi ekstraksi ke direktori `public_html`. Ini akan membuat folder `rim-landing-page`.
-6.  **(Opsional) Pindahkan File:** Jika Anda ingin aplikasi diakses langsung dari domain Anda (misal, `yourdomain.com` bukan `yourdomain.com/rim-landing-page/public`), pindahkan semua isi dari folder `rim-landing-page/public` ke direktori `public_html`.
+1.  Di cPanel, cari dan buka **"Select PHP Version"**.
+2.  Pastikan `pdo_mysql` (atau `mysqlnd`) ada dalam daftar dan dicentang.
+3.  Jika tidak, centang kotaknya dan simpan perubahan.
+*Kegagalan pada langkah ini adalah penyebab umum error "500" atau "could not find driver".*
 
 ---
 
-## Langkah 2: Buat Database MySQL
+## Langkah 1: Unggah dan Ekstrak File Aplikasi
 
-Aplikasi ini memerlukan database untuk menyimpan data pengguna, layanan, dan pesanan.
+Metode ini akan menjaga file-file sensitif (seperti `config.php`) di luar direktori web publik, yang jauh lebih aman.
 
-1.  **Kembali ke Dashboard cPanel:** Dari halaman utama cPanel, cari bagian "Databases".
-2.  **Buka MySQL® Database Wizard:** Klik ikon "MySQL® Database Wizard". Ini adalah cara termudah untuk membuat database dan pengguna.
-3.  **Langkah 1 - Buat Database:**
-    -   Masukkan nama untuk database Anda (misal, `rim_db`). cPanel akan menambahkan prefix, seperti `username_rim_db`.
-    -   Catat **nama database lengkap** ini.
-    -   Klik "Next Step".
-4.  **Langkah 2 - Buat Pengguna Database:**
-    -   Masukkan nama pengguna (misal, `rim_user`). cPanel juga akan menambahkan prefix.
-    -   Gunakan "Password Generator" untuk membuat password yang kuat dan aman.
-    -   **PENTING:** Salin dan simpan **nama pengguna** dan **password** di tempat yang aman.
-    -   Klik "Create User".
-5.  **Langkah 3 - Tambahkan Hak Akses Pengguna:**
-    -   Pada halaman "Add user to the database", centang kotak "ALL PRIVILEGES".
-    -   Klik "Next Step".
-6.  **Selesai:** Halaman "Task Complete" akan muncul. Anda sekarang memiliki database, pengguna, dan hak akses yang diperlukan.
+1.  **Login ke cPanel** dan buka **File Manager**.
+2.  Navigasi ke direktori `home` Anda (direktori paling atas, di atas `public_html`).
+3.  Klik **"Upload"** dan unggah file `rim-landing-page.zip` Anda.
+4.  Setelah selesai, kembali ke File Manager, klik kanan pada file `.zip` dan pilih **"Extract"**. Ini akan membuat folder `rim-landing-page` di direktori `home` Anda.
 
 ---
 
-## Langkah 3: Konfigurasi Aplikasi
+## Langkah 2: Arahkan Domain ke Folder `public`
 
-Sekarang, Anda perlu memberitahu aplikasi cara terhubung ke database yang baru saja Anda buat.
+Ini adalah langkah paling penting untuk keamanan dan agar URL Anda bersih (`yourdomain.com` bukan `yourdomain.com/public`).
 
-1.  **Buka File Manager:** Kembali ke File Manager di cPanel.
-2.  **Cari File Konfigurasi:** Navigasi ke direktori tempat Anda mengekstrak file, dan temukan file `config.php`.
-3.  **Edit File:**
-    -   Klik kanan pada `config.php` dan pilih "Edit".
-    -   Anda akan melihat beberapa baris `define(...)`.
-    -   Ganti nilai placeholder dengan informasi database yang Anda catat di Langkah 2.
-        -   `DB_NAME`: Nama database lengkap (misal, `username_rim_db`).
-        -   `DB_USER`: Nama pengguna database lengkap (misal, `username_rim_user`).
-        -   `DB_PASSWORD`: Password yang Anda buat.
-        -   `DB_HOST`: Biasanya `localhost`. Biarkan seperti ini kecuali penyedia hosting Anda memberikan informasi yang berbeda.
-4.  **Simpan Perubahan:** Klik tombol "Save Changes" di pojok kanan atas.
+1.  **Kembali ke Dashboard cPanel** dan cari bagian "Domains".
+2.  Klik pada **"Domains"**.
+3.  Temukan domain utama atau subdomain yang ingin Anda gunakan. Di sebelah kanan, klik **"Manage"**.
+4.  Di bawah "New Document Root", ubah path direktori. Pathnya harus menunjuk ke folder `public` yang baru saja Anda ekstrak.
+    -   Contoh Path: `public_html/rim-landing-page/public` (jika Anda mengekstrak di dalam public_html) atau `rim-landing-page/public` (jika Anda mengekstrak di home). CPanel akan memvalidasi path ini.
+    -   **PENTING:** Pastikan path ini benar. Seharusnya menunjuk ke direktori yang berisi file `index.php`.
+5.  Klik **"Update"**. cPanel akan mengonfigurasi ulang Apache untuk melayani situs Anda dari direktori yang aman ini.
 
 ---
 
-## Langkah 4: Jalankan Skrip Setup Database
+## Langkah 3: Buat Database MySQL
 
-Langkah terakhir adalah membuat tabel yang diperlukan di dalam database Anda.
+Langkah ini sama seperti sebelumnya, membuat database untuk aplikasi.
 
-1.  **Buka Browser:** Buka browser web Anda.
-2.  **Akses Skrip Setup:** Kunjungi URL tempat Anda mengunggah skrip `setup.php`.
-    -   Contoh: `http://yourdomain.com/rim-landing-page/public/setup.php`
-3.  **Jalankan Skrip:** Anda akan melihat pesan yang mengonfirmasi bahwa setiap tabel telah berhasil dibuat (atau sudah ada). Jika Anda melihat pesan error, pastikan ekstensi `pdo_mysql` aktif (lihat Catatan Penting di atas).
-4.  **PENTING - Hapus Skrip Setup:** Setelah setup berhasil, sangat penting untuk **menghapus file `setup.php`** dari server Anda untuk alasan keamanan.
-    -   Kembali ke File Manager, klik kanan pada `setup.php`, dan pilih "Delete".
+1.  Di cPanel, buka **"MySQL® Database Wizard"**.
+2.  **Buat Database:** Beri nama (misal, `rimdb`) dan catat nama lengkapnya (misal, `cpaneluser_rimdb`).
+3.  **Buat Pengguna:** Buat nama pengguna (misal, `rimuser`) dan password yang kuat. Catat detail ini.
+4.  **Berikan Hak Akses:** Tambahkan pengguna ke database dan berikan **"ALL PRIVILEGES"**.
+
+---
+
+## Langkah 4: Konfigurasi Aplikasi
+
+Hubungkan aplikasi ke database baru Anda.
+
+1.  Di File Manager, navigasi ke folder `rim-landing-page` (di direktori `home` Anda).
+2.  Klik kanan pada `config.php` dan pilih **"Edit"**.
+3.  Isi kredensial database yang Anda catat pada Langkah 3.
+4.  Klik **"Save Changes"**.
+
+---
+
+## Langkah 5: Jalankan Skrip Setup Database
+
+Langkah terakhir untuk menginisialisasi tabel-tabel database.
+
+1.  Buka browser Anda dan kunjungi URL **`http://yourdomain.com/setup.php`**.
+2.  Anda akan melihat pesan sukses yang mengonfirmasi bahwa semua tabel telah dibuat.
+3.  **SANGAT PENTING:** Setelah selesai, kembali ke File Manager dan **hapus file `setup.php`** dari folder `rim-landing-page/public` untuk mengamankan situs Anda.
 
 ---
 
 ## Instalasi Selesai!
 
-Aplikasi Anda sekarang sudah terinstal dan siap digunakan. Anda bisa mengunjungi domain Anda untuk melihat halaman utama.
+Aplikasi Anda sekarang sudah terinstal dengan aman dan berjalan di domain utama Anda.
