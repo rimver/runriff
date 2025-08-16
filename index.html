@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R/I/M - Inovasi Teknologi Terintegrasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* PWA Loading Styles */
+        .pwa-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        .pwa-loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .pwa-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(59, 130, 246, 0.3);
+            border-left: 4px solid #3B82F6;
+            border-radius: 50%;
+            animation: pwa-spin 1s linear infinite;
+        }
+        @keyframes pwa-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        body {
+            background-color: #0A192F;
+            color: #CCD6F6;
+        }
+        .shimmer-effect {
+            background: linear-gradient(90deg, #E0C56E, #FFFFFF, #E0C56E);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+            color: #E0C56E;
+        }
+        .nav-mobile {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(10, 25, 47, 0.98), rgba(30, 41, 59, 0.98));
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-mobile.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .ai-result {
+          animation: fadeInUp 0.5s ease-out;
+        }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+    </style>
+</head>
+<body class="bg-background">
+    <div class="font-sans text-primary antialiased">
+      <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md bg-background/95">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <div class="logo">
+            <a href="#" class="text-2xl font-display font-bold text-accent shimmer-effect">R/I/M</a>
+          </div>
+          <ul class="hidden md:flex items-center space-x-6">
+            <li><a href="#ai-solusi" class="text-primary hover:text-accent transition-colors duration-300">AI Solusi</a></li>
+            <li><a href="#layanan" class="text-primary hover:text-accent transition-colors duration-300">Layanan</a></li>
+            <li><a href="#portofolio" class="text-primary hover:text-accent transition-colors duration-300">Portofolio</a></li>
+            <li><a href="#kontak" class="text-primary hover:text-accent transition-colors duration-300">Kontak</a></li>
+            <li><a href="#" class="px-4 py-2 bg-accent text-background font-semibold rounded-md hover:bg-yellow-400">Hubungi Kami</a></li>
+            <li><a href="#" class="px-4 py-2 bg-card-bg text-accent font-semibold rounded-md border border-accent hover:bg-accent hover:text-background">Login</a></li>
+          </ul>
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-primary focus:outline-none z-[110]"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-4 6h4"></path></svg></button>
+          </div>
+        </nav>
+      </header>
+      <main>
+        <section class="relative h-screen flex items-center justify-center text-center overflow-hidden pt-16">
+          <div id="particles-js" class="absolute top-0 left-0 w-full h-full z-0"></div>
+          <div class="absolute top-0 left-0 w-full h-full bg-background/50 z-10"></div>
+          <div class="relative z-20 container mx-auto px-6 flex flex-col items-center">
+            <h1 class="text-4xl md:text-6xl font-display font-bold text-primary mb-4 max-w-4xl shimmer-effect">Bisnis Anda Punya Potensi. Kami Punya Teknologinya.</h1>
+            <p class="text-lg md:text-xl text-secondary max-w-3xl mb-8">Lupakan kerumitan teknis. Kami adalah mitra teknologi satu pintu yang membereskan semuanya—dari instalasi fisik hingga inovasi digital—agar Anda bisa fokus pada hal terpenting: mengembangkan bisnis.</p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a href="#ai-solusi" class="bg-accent text-background font-bold py-3 px-8 rounded-md hover:bg-yellow-400 transition-all duration-300 text-lg transform hover:scale-105">Coba AI Strategist Kami</a>
+              <a href="#" class="bg-card-bg text-accent font-bold py-3 px-8 rounded-md border border-accent hover:bg-accent hover:text-background transition-all duration-300 text-lg transform hover:scale-105">Client Portal</a>
+            </div>
+          </div>
+        </section>
+        <section id="ai-solusi" class="py-20 bg-card-bg/30">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-4 text-primary shimmer-effect">AI Business Toolkit</h2>
+                    <p class="text-xl text-secondary max-w-4xl mx-auto mb-8">Dapatkan jawaban, ide, dan strategi dalam hitungan detik. Alat AI gratis ini kami rancang untuk memecahkan masalah bisnis nyata.</p>
+                </div>
+                <div class="bg-card-bg/50 p-6 md:p-10 rounded-lg border border-border-color min-h-[500px] transition-all duration-300 mb-12">
+                    <div class="flex flex-wrap justify-center border-b border-border-color mb-8">
+                        <button class="ai-tab-button active-tab py-4 px-6 block hover:text-accent focus:outline-none text-accent border-b-2 font-medium border-accent transition-colors" data-tab="solution-strategist">Business Solution Strategist</button>
+                        <button class="ai-tab-button py-4 px-6 block hover:text-accent focus:outline-none text-secondary transition-colors" data-tab="marketing-strategist">Marketing Strategist</button>
+                        <button class="ai-tab-button py-4 px-6 block hover:text-accent focus:outline-none text-secondary transition-colors" data-tab="product-description">Product Description</button>
+                        <button class="ai-tab-button py-4 px-6 block hover:text-accent focus:outline-none text-secondary transition-colors" data-tab="it-architect">IT Architect Estimator</button>
+                    </div>
+                    <div id="ai-toolkit-content">
+                        <div id="solution-strategist" class="ai-tab-content"><div class="text-center"><h3 class="text-2xl font-display font-bold mb-4 text-primary">Business Solution Strategist</h3><p class="text-secondary mb-6">Dapatkan solusi bisnis berbasis AI untuk pertanyaan Anda</p><div class="max-w-2xl mx-auto"><form class="ai-form space-y-4" data-persona="business_solution"><div><label for="business-question" class="sr-only">Apa pertanyaan bisnis Anda?</label><textarea rows="4" placeholder="Contoh: Bagaimana cara meningkatkan efisiensi operasional di gudang kami?" class="w-full bg-background border border-border-color rounded-md p-3 text-primary focus:ring-2 focus:ring-accent resize-none"></textarea></div><button type="submit" class="ai-submit-btn bg-accent text-background font-bold py-3 px-6 rounded-md hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Dapatkan Solusi AI</button></form><div class="ai-result hidden mt-6 p-6 bg-background/50 rounded-lg border border-border-color"><h4 class="font-bold text-primary mb-3">AI Response:</h4><div class="ai-response text-secondary leading-relaxed"></div></div></div></div></div>
+                        <div id="marketing-strategist" class="ai-tab-content hidden"><div class="text-center"><h3 class="text-2xl font-display font-bold mb-4 text-primary">AI Marketing Strategist</h3><p class="text-secondary mb-6">Dapatkan ide kampanye pemasaran yang inovatif.</p><div class="max-w-2xl mx-auto"><form class="ai-form space-y-4" data-persona="marketing"><div><label for="marketing-prompt" class="sr-only">Jelaskan produk dan target audiens Anda</label><textarea rows="4" placeholder="Contoh: Produk kopi organik untuk kalangan muda profesional di perkotaan." class="w-full bg-background border border-border-color rounded-md p-3 text-primary focus:ring-2 focus:ring-accent resize-none"></textarea></div><button type="submit" class="ai-submit-btn bg-accent text-background font-bold py-3 px-6 rounded-md hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Dapatkan Ide Pemasaran</button></form><div class="ai-result hidden mt-6 p-6 bg-background/50 rounded-lg border border-border-color"><h4 class="font-bold text-primary mb-3">AI Response:</h4><div class="ai-response text-secondary leading-relaxed"></div></div></div></div></div>
+                        <div id="product-description" class="ai-tab-content hidden"><div class="text-center"><h3 class="text-2xl font-display font-bold mb-4 text-primary">AI Product Description Generator</h3><p class="text-secondary mb-6">Buat deskripsi produk yang menjual dalam sekejap.</p><div class="max-w-2xl mx-auto"><form class="ai-form space-y-4" data-persona="product_description"><div><label for="product-details" class="sr-only">Deskripsikan produk Anda</label><textarea rows="4" placeholder="Contoh: Laptop gaming dengan RTX 4060, RAM 16GB, SSD 512GB, layar 15.6 inch 144Hz." class="w-full bg-background border border-border-color rounded-md p-3 text-primary focus:ring-2 focus:ring-accent resize-none"></textarea></div><button type="submit" class="ai-submit-btn bg-accent text-background font-bold py-3 px-6 rounded-md hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Generate Deskripsi</button></form><div class="ai-result hidden mt-6 p-6 bg-background/50 rounded-lg border border-border-color"><h4 class="font-bold text-primary mb-3">AI Response:</h4><div class="ai-response text-secondary leading-relaxed"></div></div></div></div></div>
+                        <div id="it-architect" class="ai-tab-content hidden"><div class="text-center"><h3 class="text-2xl font-display font-bold mb-4 text-primary">IT Architect & Cost Estimator</h3><p class="text-secondary mb-6">Estimasi biaya dan arsitektur IT untuk proyek Anda.</p><div class="max-w-2xl mx-auto"><form class="ai-form space-y-4" data-persona="it_architect"><div><label for="project-details" class="sr-only">Deskripsikan proyek IT Anda</label><textarea rows="4" placeholder="Contoh: Website e-commerce untuk 100 produk, sistem pembayaran, dan manajemen inventory." class="w-full bg-background border border-border-color rounded-md p-3 text-primary focus:ring-2 focus:ring-accent resize-none"></textarea></div><button type="submit" class="ai-submit-btn bg-accent text-background font-bold py-3 px-6 rounded-md hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Estimasi Proyek</button></form><div class="ai-result hidden mt-6 p-6 bg-background/50 rounded-lg border border-border-color"><h4 class="font-bold text-primary mb-3">AI Response:</h4><div class="ai-response text-secondary leading-relaxed"></div></div></div></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+      </main>
+      <footer class="py-12 bg-card-bg/30 border-t border-border-color">
+        <div class="container mx-auto px-6"><div class="text-center"><p class="text-secondary text-sm">© <script>document.write(new Date().getFullYear())</script> R/I/M Technology. All Rights Reserved.</p></div></div>
+      </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // PWA Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            if ('serviceWorker' in navigator) {
+                console.log('[PWA] PWA supported');
+            } else {
+                console.log('[PWA] PWA not supported');
+            }
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+                document.body.classList.add('pwa-installed');
+            }
+        });
+
+        // AI Toolkit Tab Functionality
+        document.querySelectorAll('.ai-tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+              const targetTab = this.getAttribute('data-tab');
+              document.querySelectorAll('.ai-tab-button').forEach(btn => {
+                btn.classList.remove('active-tab', 'text-accent', 'border-accent');
+                btn.classList.add('text-secondary');
+              });
+              document.querySelectorAll('.ai-tab-content').forEach(content => {
+                content.classList.add('hidden');
+              });
+              this.classList.add('active-tab', 'text-accent', 'border-accent');
+              this.classList.remove('text-secondary');
+              document.getElementById(targetTab).classList.remove('hidden');
+            });
+        });
+
+        // AI Form Submissions (Mock Implementation)
+        document.querySelectorAll('.ai-form').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+              e.preventDefault();
+
+              const textarea = this.querySelector('textarea');
+              const submitBtn = this.querySelector('.ai-submit-btn');
+              const resultDiv = this.parentElement.querySelector('.ai-result');
+              const responseDiv = this.parentElement.querySelector('.ai-response');
+              const persona = this.getAttribute('data-persona');
+              const originalButtonText = submitBtn.textContent;
+
+              if (!textarea.value.trim()) {
+                alert('Please enter your question or request.');
+                return;
+              }
+
+              submitBtn.disabled = true;
+              submitBtn.innerHTML = '<i class="bi bi-hourglass-split mr-2"></i> Processing...';
+              resultDiv.classList.add('hidden');
+
+              // Simulate network delay
+              await new Promise(resolve => setTimeout(resolve, 1500));
+
+              // Generic mock response
+              let response = `This is a simulated AI response for the '${persona}' persona, based on your query: "${textarea.value.substring(0, 50)}..."<br><br>In a live environment, this would contain a detailed, generative answer from a real AI model.`;
+
+              responseDiv.innerHTML = response;
+              resultDiv.classList.remove('hidden');
+
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalButtonText;
+            });
+        });
+
+        // Particles.js Initialization
+        if (document.getElementById('particles-js')) {
+            particlesJS('particles-js', {
+              particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#E0C56E' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5, random: false },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: '#E0C56E', opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 6, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+              },
+              interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                modes: { grab: { distance: 400, line_linked: { opacity: 1 } }, bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 }, repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 }, remove: { particles_nb: 2 } }
+              },
+              retina_detect: true
+            });
+        }
+    </script>
+</body>
+</html>
